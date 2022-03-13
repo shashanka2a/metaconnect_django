@@ -14,7 +14,21 @@
 
 <body>
 
-    <button onclick="login()">Login with Metamask</button>
+    <button id="login" onclick="login()">Login with Metamask</button>
+
+    <form method="POST" action="{% url 'checkme' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>NFT Name</label>
+        <input name="nftname" type="text" />
+        <label>Symbol</label>
+        <input name="symbol" type="text" /><br>
+        <label>Description</label>
+        <input name="desc" type="text" />
+        <input type="hidden" name="address" id="js_data_input">
+        <input type="hidden" name="user" id="js_user_input">
+        <br>
+        <input required name="allimages" type="file">
+        <input type="submit" />
     </form>
 
     <script>
@@ -26,23 +40,19 @@
             user = await Moralis.Web3.authenticate();
             if (user) {
                 console.log(user);
+                document.getElementById('js_user_input').value = user.id;
                 user.save();
             }
             Moralis.User.currentAsync().then(function (user) {
                 if (user.get('ethAddress')) {
                     wallet = user.get('ethAddress');
                     console.log(wallet);
+                    document.getElementById('login').innerText = wallet;
+                    document.getElementById('js_data_input').value = wallet;
                 }
             });
-            console.log('ajaxxxxxxxxxxxx');
-            $.ajax({
-                url: 'checkMe/',
-                data: {
-                    'wallet': wallet,
-                    'user': user.id
-                },
-                success: function (response) { }
-            });
+
+
 
         }
 

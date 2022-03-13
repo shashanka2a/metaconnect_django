@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+import requests
 
 from metaconnect.models import Owner,ProjectDetails
 
@@ -11,25 +12,29 @@ def Home(request):
 
 def checkMe(request):
     print('Helloooo')
-    print(request.GET.get('user'))
-    print(request.GET.get('wallet'))
-    if request.GET:
-        address =request.GET.get('wallet')
-        moralisid =request.GET.get('user')
-        print(address)
-        ownerobj =  Owner.objects.get(owneraddress=address)
-        if ownerobj:
-            redirect('formview',address)
-        else:
-            owner = Owner()
-            owner.owneraddress=address
-            owner.moralisid=moralisid
-            owner.save()
-            redirect('formview',address)
 
-    return render(request,'home.html')
-
-
-def FormView(request,addr):
+    if request.POST:
+        address =request.POST.get('address')
+        moralisid =request.POST.get('user')
+        project =request.POST.get('nftname')
+        symbol =request.POST.get('symbol')
+        desc =request.POST.get('desc')
+        myfile  = request.FILES['allimages'] 
+        print(myfile)
+        
+        try:
+            ownerobj =  Owner.objects.get(owneraddress=address)
+        except:
+            ownerobj = Owner()
+            ownerobj.owneraddress=address
+            ownerobj.moralisid=moralisid
+            ownerobj.save()
+        temp = ProjectDetails()
+        temp.user=ownerobj
+        temp.name= project
+        temp.symbol = symbol
+        temp.description=desc
+        temp.image = myfile
+        temp.save()
     
     return render(request,'user_page.html')
