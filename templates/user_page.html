@@ -11,7 +11,18 @@
 
 <body>
     Hello world
+    <br>
+    {{walletdetails.owneraddress}}<br>
+    {{walletdetails.moralisid}}<br>
+    {{project.name}}
+    {{project.symbol}}
 
+    <img src="/images/{{project.image}}" style="width: 20%;" />
+
+    <form action="{% url 'upload' walletdetails.owneraddress %}">
+        {% csrf_token %}
+        <input type="submit" value="upload to ipfs">
+    </form>
 
 </body>
 

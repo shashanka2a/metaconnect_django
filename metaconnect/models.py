@@ -15,7 +15,7 @@ class ProjectDetails(models.Model):
     name = models.CharField(max_length=255,null=True,blank=True)
     symbol = models.CharField(max_length=255,null=True,blank=True)
     description = models.CharField(max_length=255,null=True,blank=True)
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField()
 
     def __str__(self):
         return "HELLO"
