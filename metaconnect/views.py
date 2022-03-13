@@ -10,8 +10,7 @@ def Home(request):
     return render(request,'home.html')
 
 
-def checkMe(request):
-    print('Helloooo')
+def validate(request):
 
     if request.POST:
         address =request.POST.get('address')
@@ -42,8 +41,7 @@ def checkMe(request):
 
 def Dashboard(request,address):
     userwallet  = Owner.objects.get(owneraddress=address)
-
-    project=ProjectDetails.objects.get(user=userwallet)
+    project =  ProjectDetails.objects.get(user=userwallet)
     print(project.image)
 
 
@@ -58,10 +56,10 @@ def upload(request,address):
     print(file)
     response = requests.post(
     "https://api.nftport.xyz/v0/files",
-    headers={"Authorization": 'd775b8ce-a5b7-420b-b818-3e7c46075ab2'},
+    headers={"Authorization": 'fec94101-bb38-44ae-bd6f-0f0c591070fd'},
     files={"file": file}
     )
-    print('HWLLLLLLLLLLLLLLLLLLLL')
+    
     print(type(response))
     x = response.json()
     contract  = getData()
@@ -79,49 +77,48 @@ def deploy(request,address):
     userwallet  = Owner.objects.get(owneraddress=address)
     project=ProjectDetails.objects.get(user=userwallet)
     url = "https://api.nftport.xyz/v0/contracts"
-    payload = "{\n  \"chain\": \"polygon\",\n  \"name\": \"CRYPTOPUNKS\",\n  \"symbol\": \"CYBER\",\n  \"owner_address\":coollll,\n  \"metadata_updatable\": false,\n  \"type\": \"erc1155\"\n}"
+    payload = "{\n  \"chain\": \"polygon\",\n  \"name\": \"CRYPTOPUNKS\",\n  \"symbol\": \"CYBER\",\n  \"owner_address\":wallet,\n  \"metadata_updatable\": false,\n  \"type\": \"erc1155\"\n}"
     print(project.name)
     print(project.symbol)
     payload = payload.replace('CRYPTOPUNKS',project.name)
     payload = payload.replace('CYBER',project.symbol)
-    payload=payload.replace('coollll','"'+address+'"')
+    payload=payload.replace('wallet','"'+address+'"')
 
     headers = {
     'Content-Type': "application/json",
-    'Authorization': "d775b8ce-a5b7-420b-b818-3e7c46075ab2"
+    'Authorization': "fec94101-bb38-44ae-bd6f-0f0c591070fd"
     }
     response = requests.request("POST", url, data=payload, headers=headers)
-    print(response.text)
-    print('--------------------')
     print(response)
     return render(request,'deploy.html',{'respose':response.text})
 
 def getData():
     return '''
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+        // SPDX-License-Identifier: MIT
+        pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+        import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+        import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MyToken is ERC1155, Ownable {
-    constructor() ERC1155("") {}
+        contract MyToken is ERC1155, Ownable {
+            constructor() ERC1155("") {}
 
-    function setURI(string memory newuri) public onlyOwner {
-        _setURI(_newuri);
-    }
+            function setURI(string memory newuri) public onlyOwner {
+                _setURI(_newuri);
+            }
 
-    function mint(address account, uint256 id, uint256 amount, bytes memory data)
-        public
-        onlyOwner
-    {
-        _mint(account, id, amount, data);
-    }
+            function mint(address account, uint256 id, uint256 amount, bytes memory data)
+                public
+                onlyOwner
+            {
+                _mint(account, id, amount, data);
+            }
 
-    function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
-        public
-        onlyOwner
-    {
-        _mintBatch(to, ids, amounts, data);
-    }
-}'''
+            function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
+                public
+                onlyOwner
+            {
+                _mintBatch(to, ids, amounts, data);
+            }
+        }
+    '''
