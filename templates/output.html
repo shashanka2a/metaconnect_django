@@ -12,6 +12,19 @@
     {{error}}<br>
     {{response}}<br>
     {{ipfs_url}}<br>
+    {{userwallet.owneraddress}}<br>
+    {{project.name}}<br>
+    <pre>{{contract}}</pre>
+    <br>
+    <br>
+
+    <form method="POST" action="{% url 'deploy' userwallet.owneraddress %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="submit" value="Deploy" />
+    </form>
+
+
+
 
 
 
