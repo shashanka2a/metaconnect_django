@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 import requests
 
-from metaconnect.models import Owner,ProjectDetails
+from metaconnect.models import ArchiveProjectDetails, Owner, ProjectDetails
 
 # Create your views here.
 def Home(request):
@@ -76,6 +76,18 @@ def upload(request,address):
 def deploy(request,address):
     userwallet  = Owner.objects.get(owneraddress=address)
     project=ProjectDetails.objects.get(user=userwallet)
+    """
+    temp_proj = ArchiveProjectDetails()
+    temp_proj.user = project.user
+    temp_proj.name = project.name
+    temp_proj.symbol = project.symbol
+    temp_proj.description = project.description
+    temp_proj.image = project.image
+    
+    temp_proj.save()
+    """
+    project.delete()
+
     url = "https://api.nftport.xyz/v0/contracts"
     payload = "{\n  \"chain\": \"polygon\",\n  \"name\": \"CRYPTOPUNKS\",\n  \"symbol\": \"CYBER\",\n  \"owner_address\":wallet,\n  \"metadata_updatable\": false,\n  \"type\": \"erc1155\"\n}"
     print(project.name)
